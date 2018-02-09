@@ -14,6 +14,7 @@
       <div class="terminal-body">
         <div class="terminal-left">
           <span class="hex" v-for="(n, rowIndex) in numberOfRows" :key="n.id">0xF000&nbsp;
+            <!-- class is added for the very first character on page load -->
             <span><span v-for="(i, letterIndex) in lines[n - 1]" :class="{ 'selected': rowIndex === 0 && letterIndex === 0 }" :key="i.id">{{ i }}</span></span>
           </span>
         </div>
@@ -79,52 +80,61 @@ export default {
 
     printLines: function(rawArray, lineLength) {
       let self = this;
+
       let lines = [];
       console.log(lines);
-      for (let i = 0; i < rawArray.length; i += lineLength) { // split long array in to seperate arrays of 12 characters
+      // split long array in to seperate arrays of characters for each line
+      for (let i = 0; i < rawArray.length; i += lineLength) {
         lines.push(rawArray.slice(i, i + lineLength));
       }
-      for (let i = 0; i < lines.length; ++i) { // push to data
+      // push our array of arrays (lines) to data to be rendered in the template
+      for (let i = 0; i < lines.length; ++i) {
         self.lines.push(lines[i].join(''));
       }
     },
 
-    formatChars: function(charsString, stringLength, numberOfChars, difficulty) {
+    formatChars: function(charsString, numberOfChars, difficulty) {
       for (let i = 0; i < words.length; ++i) {
+        // get a random index for somewhere to randomly place the word
         const randomIndex = Math.floor(Math.random() * numberOfChars);
+        // get the ascii code of the character at this index
         const charCode = charsString[randomIndex].charCodeAt(0);
         console.log(randomIndex + difficulty);
+        // check if it goes off the end
         if (randomIndex + difficulty > numberOfChars) {
-          // remove 1 from i to repeat this iteration and try again
+          // remove 1 from i to repeat this iteration of the words and try again
           i -= 1;
           continue;
         }
-        // if our random character is a letter i.e. has already been replaced
+        // check if our random index is a letter i.e. has already been replaced
         if (charCode >= 65 && charCode <= 90) {
-          // remove 1 from i to repeat this iteration and try again
           i -= 1;
           continue;
+        // check ahead of the index so we don't overlap another word
         } else if (charsString[randomIndex + (difficulty)].charCodeAt(0) >= 65 &&
           charsString[randomIndex + (difficulty)].charCodeAt(0) <= 90) {
-          // remove 1 from i to repeat this iteration and try again
           i -= 1;
           continue;
+        // also check behind so we don't overlap
+        // randomIndex - 1 ensures a 1 character space so two words are not directly next to each other
         } else if (charsString[randomIndex - 1].charCodeAt(0) >= 65 &&
           charsString[randomIndex - 1].charCodeAt(0) <= 90 &&
           charsString[randomIndex - 1] < 0) {
-          // remove 1 from i to repeat this iteration and try again
           i -= 1;
           continue;
         } else if (charsString[randomIndex - 1] !== undefined || charsString[randomIndex + (difficulty + 1)] !== undefined) {
           let indexToReplace = randomIndex;
           const currentWord = words[i].split('');
-          console.log(currentWord);
+          // we have split our word in to letters, now replace the indices starting at the random
+          // index with the letters from our word
           for (let letter = 0; letter < currentWord.length; letter++) {
             charsString[indexToReplace] = currentWord[letter].toUpperCase();
             indexToReplace += 1;
           }
         }
       }
+      // pass our entire string with words in and the length of each line to this
+      // function to print them to the screen
       this.printLines(charsString, lineLength);
       // as well as sending the long string to the print lines function, we also save
       // it in to a variable defined at the top of the code to use further down in
@@ -135,38 +145,24 @@ export default {
     specialChars: function(numberOfChars) {
       let specialChars = [];
       let specialCharsString = [];
+      // get all special characters using ascii codes
       for (let i = 33; i <= 63; ++i) {
         if (i < 48 || i > 57) {
           specialChars.push(String.fromCharCode(i));
         }
       }
+      // get random special chars and add them to the array
       for (let i = 0; i < numberOfChars; ++i) {
         specialCharsString.push(specialChars[Math.floor(Math.random() * specialChars.length)]);
       }
-      this.formatChars(specialCharsString, 7, numberOfChars, difficulty);
+      // send the array to this function to add the words in
+      // we pass in the array itself, the total length of the array
+      // of special characters, and the difficulty which equals
+      // the length of our words
+      this.formatChars(specialCharsString, numberOfChars, difficulty);
     },
 
-    highlight: function(index) {
-      // const highlightTriggers = this.$refs;
-      // console.log(highlightTriggers);
-      // if (highlightTriggers[index - 1]) {
-      //   highlightTriggers[index - 1].classList.remove('highlight');
-      // }
-      // highlightTriggers[index].classList.add('highlight');
-    },
-
-    attemptsLeft: function() {
-      console.log('attemptsFunc');
-      // attemptsSquares.innerHTML = '';
-      // for (let i = 0; i < attempts; i++) {
-      //   const square = document.createElement('span');
-      //   square.classList.add('attempts-square');
-      //   attemptsSquares.appendChild(square);
-      // }
-      // attemptsCount.innerHTML = parseFloat(attempts);
-    },
-
-    changeSelection: function(keyPress) {
+    changeSelection: function(newIndex) {
 
     },
 
@@ -178,9 +174,11 @@ export default {
           case 40: // down
             console.log('down');
             break;
+
           case 38: // up
             console.log('up');
             break;
+
           case 37: // left
             console.log('left');
             break;
@@ -209,6 +207,7 @@ export default {
               selectedIndex += 1;
             }
             break;
+
           case 13: // enter
             console.log('enter');
             break;
@@ -219,8 +218,8 @@ export default {
   },
 
   created: function() {
-    this.specialChars(numberOfChars); // render the screen
-    this.keyboardInput(); // listen for keyboard input and perform operations
+    this.specialChars(numberOfChars); // creates characters/words and renders the screen
+    this.keyboardInput(); // listens for keyboard input and perform operations
     this.attemptsLeft();
     this.highlight(1);
   }
