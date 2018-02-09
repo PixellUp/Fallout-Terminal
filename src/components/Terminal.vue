@@ -163,10 +163,11 @@ export default {
     },
 
     changeSelection: function(newIndex) {
-
+      
     },
 
     keyboardInput: function() {
+      let self = this;
       let selectedIndex = 0;
 
       document.addEventListener('keydown', function(e) {
@@ -180,7 +181,31 @@ export default {
             break;
 
           case 37: // left
-            console.log('left');
+            // if at the start, go nowhere
+            if (selectedIndex === 0) {
+              break;
+            }
+            // if currently selected index is part of a word, move to the end of the word
+            if (completeString[selectedIndex].charCodeAt(0) >= 65 && completeString[selectedIndex].charCodeAt(0) <= 90) {
+              let isLetter = true;
+              while (isLetter) {
+                selectedIndex -= 1;
+                if (completeString[selectedIndex].charCodeAt(0) < 65 || completeString[selectedIndex].charCodeAt(0) > 90) {
+                  selectedIndex += 1; // undo the original increase if it's no longer a word
+                  isLetter = false;
+                }
+              }
+            }
+            // check if at start of row, if yes move to adjacent row
+            if (selectedIndex >= (numberOfChars / 2) && (selectedIndex) % 12 === 0) {
+              selectedIndex -= ((numberOfChars / 2) - 11);
+            } else {
+              // if no, move one to the right
+              selectedIndex -= 1;
+            }
+            // console.log(selectedIndex);
+            // console.log(completeString[selectedIndex]);
+            self.changeSelection(selectedIndex);
             break;
 
           case 39: // right
@@ -201,11 +226,14 @@ export default {
             }
             // check if at end of row, if yes move to adjacent row
             if (selectedIndex < (numberOfChars / 2) && (selectedIndex + 1) % 12 === 0) {
-              selectedIndex += (numberOfChars / 2);
+              selectedIndex += ((numberOfChars / 2) - 11);
             } else {
               // if no, move one to the right
               selectedIndex += 1;
             }
+            // console.log(selectedIndex);
+            // console.log(completeString[selectedIndex]);
+            self.changeSelection(selectedIndex);
             break;
 
           case 13: // enter
@@ -220,8 +248,6 @@ export default {
   created: function() {
     this.specialChars(numberOfChars); // creates characters/words and renders the screen
     this.keyboardInput(); // listens for keyboard input and perform operations
-    this.attemptsLeft();
-    this.highlight(1);
   }
 };
 </script>
