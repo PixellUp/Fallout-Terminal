@@ -15,12 +15,12 @@
         <div class="terminal-left">
           <span class="hex" v-for="(n, rowIndex) in numberOfRows" :key="n.id">0xF000&nbsp;
             <!-- class is added for the very first character on page load -->
-            <span><span v-for="(i, letterIndex) in lines[n - 1]" :class="{ 'selected': rowIndex === 0 && letterIndex === 0 }" :key="i.id">{{ i }}</span></span>
+            <span><span v-for="(i, letterIndex) in lines[n - 1]" ref="character" :class="{ 'selected': rowIndex === 0 && letterIndex === 0 }" :key="i.id">{{ i }}</span></span>
           </span>
         </div>
         <div class="terminal-middle">
           <span class="hex" v-for="n in numberOfRows" :key="n.id">0xF000&nbsp;
-            <span><span v-for="i in lines[n + numberOfRows - 1]" :key="i.id">{{ i }}</span></span>
+            <span><span v-for="i in lines[n + numberOfRows - 1]" ref="character" :key="i.id">{{ i }}</span></span>
           </span>
         </div>
         <div class="terminal-right">
@@ -72,7 +72,8 @@ export default {
       lines: [],
       attempts: 4,
       isHighlighted: true,
-      numberOfRows: 17
+      numberOfRows: 17,
+      selected: true
     };
   },
 
@@ -162,8 +163,35 @@ export default {
       this.formatChars(specialCharsString, numberOfChars, difficulty);
     },
 
-    changeSelection: function(newIndex) {
-      
+    changeSelection: function(newIndex, direction) {
+      // get the span elements of the rendered characters
+      let renderedChars = this.$refs.character;
+
+      for (let i = 0; i < numberOfChars; ++i) {
+        // remove currently selected
+        if (renderedChars[i].classList.contains('selected')) {
+          renderedChars[i].classList.remove('selected');
+        }
+      }
+      renderedChars[newIndex].classList.add('selected');
+      // if we are on a letter, highlight the whole word
+      if (renderedChars[newIndex].innerHTML.charCodeAt(0) >= 65 && renderedChars[newIndex].innerHTML.charCodeAt(0) <= 90) {
+        switch (direction) {
+          // if we move right in to a word, look ahead at the characters and highlight them all
+          case 'right':
+            for (let i = newIndex; i < (newIndex + 7); ++i) {
+              renderedChars[i].classList.add('selected');
+            }
+            break;
+
+          // if we move left in to a word, look behind at the characters and highlight them all
+          case 'left':
+            for (let i = newIndex; i > (newIndex - 7); --i) {
+              renderedChars[i].classList.add('selected');
+            }
+            break;
+        }
+      }
     },
 
     keyboardInput: function() {
@@ -205,7 +233,7 @@ export default {
             }
             // console.log(selectedIndex);
             // console.log(completeString[selectedIndex]);
-            self.changeSelection(selectedIndex);
+            self.changeSelection(selectedIndex, 'left');
             break;
 
           case 39: // right
@@ -233,7 +261,7 @@ export default {
             }
             // console.log(selectedIndex);
             // console.log(completeString[selectedIndex]);
-            self.changeSelection(selectedIndex);
+            self.changeSelection(selectedIndex, 'right');
             break;
 
           case 13: // enter
@@ -246,6 +274,7 @@ export default {
   },
 
   created: function() {
+    console.clear();
     this.specialChars(numberOfChars); // creates characters/words and renders the screen
     this.keyboardInput(); // listens for keyboard input and perform operations
   }
