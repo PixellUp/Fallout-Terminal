@@ -1,0 +1,12 @@
+@font-face {
+  font-family: "Fixedsys";
+  src: url("/static/fonts/fixedsys.ttf");
+}
+body {
+  color: #4afa8f;
+  font-family: 'FixedSys', sans-serif;
+  font-size: 1.2em;
+  width: 100%;
+  height: 100%;
+}
+p { margin: 0; }
