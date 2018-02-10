@@ -25,12 +25,7 @@
         </div>
         <div class="terminal-right">
           <div class="input-area">
-            <br>
-            <span class="guess"></span>
-            <br>
-            <span class="entry-check"></span><br>
-            <span class="correct"></span><br>
-            ><span class="input"></span><span class="cursor"></span>
+            ><span class="input"><span>{{ currentlySelected }}</span></span><span class="cursor"></span>
           </div>
         </div>
 
@@ -73,11 +68,26 @@ export default {
     return {
       lines: [],
       attempts: 4,
-      numberOfRows: 17
+      numberOfRows: 17,
+      currentlySelected: ''
     };
   },
 
   methods: {
+
+    printLetters: function(letters) {
+      // prints out characters one at a time on the screen
+      let self = this;
+
+      self.currentlySelected = '';
+      let currentLetters = [];
+      letters.forEach((letter, index) => { // print letters one at a time
+        setTimeout(() => {
+          currentLetters.push(letter);
+          self.currentlySelected = currentLetters.join('');
+        }, 50 * (index + 1));
+      });
+    },
 
     printLines: function(rawArray, lineLength) {
       let self = this;
@@ -163,9 +173,25 @@ export default {
       this.formatChars(specialCharsString, numberOfChars, difficulty);
     },
 
+    showCurrentlySelected: function(renderedChars) {
+      let self = this;
+
+      // add all currently selected characters to data
+      let currentSelection = [];
+      for (let i = 0; i < numberOfChars; ++i) {
+        if (renderedChars[i].classList.contains('selected')) {
+          console.log(renderedChars[i].innerText);
+          currentSelection.push(renderedChars[i].innerText);
+        }
+      }
+      self.printLetters(currentSelection);
+    },
+
     changeSelection: function(newIndex) {
+      let self = this;
+
       // get the span elements of the rendered characters
-      let renderedChars = this.$refs.character;
+      let renderedChars = self.$refs.character;
 
       for (let i = 0; i < numberOfChars; ++i) {
         // remove currently selected
@@ -210,6 +236,8 @@ export default {
           }
         }
       }
+
+      self.showCurrentlySelected(renderedChars);
     },
 
     keyboardInput: function() {
