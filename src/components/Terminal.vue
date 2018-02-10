@@ -176,13 +176,13 @@ export default {
       renderedChars[newIndex].classList.add('selected');
 
       // if we are on an opening bracket, check ahead for a closing bracket and highlight them all
-      if (openingBrackets.includes(renderedChars[newIndex].innerHTML)) {
-        const bracketIndex = openingBrackets.indexOf(renderedChars[newIndex].innerHTML);
+      if (openingBrackets.includes(renderedChars[newIndex].innerText)) {
+        const bracketIndex = openingBrackets.indexOf(renderedChars[newIndex].innerText);
         const closingBracket = closingBrackets[bracketIndex];
         // check only on the current line
         // if a matching bracket is found, highlight everything between
         for (let i = newIndex; (i + 1) % 12 !== 0; ++i) {
-          if (renderedChars[i].innerHTML === closingBracket) {
+          if (renderedChars[i].innerText === closingBracket) {
             for (let j = newIndex; j <= i; ++j) {
               renderedChars[j].classList.add('selected');
             }
