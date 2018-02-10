@@ -217,11 +217,22 @@ export default {
       document.addEventListener('keydown', function(e) {
         switch (e.keyCode) {
           case 40: // down
-            console.log('down');
+            if (selectedIndex >= (numberOfChars - 11) || (selectedIndex >= (numberOfChars / 2 - 12) && selectedIndex <= (numberOfChars / 2 - 1))) {
+              break;
+            }
+            selectedIndex += 12;
+
+            self.changeSelection(selectedIndex, 'down');
             break;
 
           case 38: // up
-            console.log('up');
+            // if on the top rows, go nowhere
+            if (selectedIndex < 12 || (selectedIndex >= (numberOfChars / 2) && selectedIndex <= (numberOfChars / 2 + 11))) {
+              break;
+            }
+            selectedIndex -= 12;
+
+            self.changeSelection(selectedIndex, 'up');
             break;
 
           case 37: // left
