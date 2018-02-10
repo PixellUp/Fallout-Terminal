@@ -163,7 +163,7 @@ export default {
       this.formatChars(specialCharsString, numberOfChars, difficulty);
     },
 
-    changeSelection: function(newIndex, direction) {
+    changeSelection: function(newIndex) {
       // get the span elements of the rendered characters
       let renderedChars = this.$refs.character;
 
@@ -192,20 +192,22 @@ export default {
 
       // if we are on a letter, highlight the whole word
       if (renderedChars[newIndex].innerHTML.charCodeAt(0) >= 65 && renderedChars[newIndex].innerHTML.charCodeAt(0) <= 90) {
-        switch (direction) {
-          // if we move right in to a word, look ahead at the characters and highlight them all
-          case 'right':
-            for (let i = newIndex; i < (newIndex + 7); ++i) {
-              renderedChars[i].classList.add('selected');
-            }
+        // if we move in to a word, look around and highlight characters
+        // look to the right
+        for (let i = newIndex; i < (newIndex + 7); ++i) {
+          if (renderedChars[i].innerHTML.charCodeAt(0) >= 65 && renderedChars[i].innerHTML.charCodeAt(0) <= 90) {
+            renderedChars[i].classList.add('selected');
+          } else {
             break;
-
-          // if we move left in to a word, look behind at the characters and highlight them all
-          case 'left':
-            for (let i = newIndex; i > (newIndex - 7); --i) {
-              renderedChars[i].classList.add('selected');
-            }
+          }
+        }
+        // look to the left
+        for (let i = newIndex; i > (newIndex - 7); --i) {
+          if (renderedChars[i].innerHTML.charCodeAt(0) >= 65 && renderedChars[i].innerHTML.charCodeAt(0) <= 90) {
+            renderedChars[i].classList.add('selected');
+          } else {
             break;
+          }
         }
       }
     },
@@ -222,7 +224,7 @@ export default {
             }
             selectedIndex += 12;
 
-            self.changeSelection(selectedIndex, 'down');
+            self.changeSelection(selectedIndex);
             break;
 
           case 38: // up
@@ -232,7 +234,7 @@ export default {
             }
             selectedIndex -= 12;
 
-            self.changeSelection(selectedIndex, 'up');
+            self.changeSelection(selectedIndex);
             break;
 
           case 37: // left
@@ -260,7 +262,7 @@ export default {
             }
             // console.log(selectedIndex);
             // console.log(completeString[selectedIndex]);
-            self.changeSelection(selectedIndex, 'left');
+            self.changeSelection(selectedIndex);
             break;
 
           case 39: // right
@@ -288,7 +290,7 @@ export default {
             }
             // console.log(selectedIndex);
             // console.log(completeString[selectedIndex]);
-            self.changeSelection(selectedIndex, 'right');
+            self.changeSelection(selectedIndex);
             break;
 
           case 13: // enter
