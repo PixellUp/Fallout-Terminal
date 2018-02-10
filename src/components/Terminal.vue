@@ -63,6 +63,8 @@ const numberOfChars = 408;
 const difficulty = 7;
 const lineLength = 12;
 let completeString = '';
+const openingBrackets = ['<', '(', '[', '{'];
+const closingBrackets = ['>', ')', ']', '}'];
 
 export default {
   name: 'Terminal',
@@ -71,9 +73,7 @@ export default {
     return {
       lines: [],
       attempts: 4,
-      isHighlighted: true,
-      numberOfRows: 17,
-      selected: true
+      numberOfRows: 17
     };
   },
 
@@ -147,8 +147,8 @@ export default {
       let specialChars = [];
       let specialCharsString = [];
       // get all special characters using ascii codes
-      for (let i = 33; i <= 63; ++i) {
-        if (i < 48 || i > 57) {
+      for (let i = 33; i <= 126; ++i) {
+        if (i < 48 || (i > 57 && i <= 63) || (i > 90 && i <= 95) || (i > 122 && i <= 126)) {
           specialChars.push(String.fromCharCode(i));
         }
       }
@@ -174,6 +174,22 @@ export default {
         }
       }
       renderedChars[newIndex].classList.add('selected');
+
+      // if we are on an opening bracket, check ahead for a closing bracket and highlight them all
+      if (openingBrackets.includes(renderedChars[newIndex].innerHTML)) {
+        const bracketIndex = openingBrackets.indexOf(renderedChars[newIndex].innerHTML);
+        const closingBracket = closingBrackets[bracketIndex];
+        // check only on the current line
+        // if a matching bracket is found, highlight everything between
+        for (let i = newIndex; (i + 1) % 12 !== 0; ++i) {
+          if (renderedChars[i].innerHTML === closingBracket) {
+            for (let j = newIndex; j <= i; ++j) {
+              renderedChars[j].classList.add('selected');
+            }
+          }
+        }
+      }
+
       // if we are on a letter, highlight the whole word
       if (renderedChars[newIndex].innerHTML.charCodeAt(0) >= 65 && renderedChars[newIndex].innerHTML.charCodeAt(0) <= 90) {
         switch (direction) {
