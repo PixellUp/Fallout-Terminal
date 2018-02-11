@@ -24,6 +24,9 @@
           </span>
         </div>
         <div class="terminal-right">
+          <div class="output-area">
+            <p v-for="output in outputText" :key="output.id">{{ output }}</p>
+          </div>
           <div class="input-area">
             ><span class="input"><span>{{ currentlySelected }}</span></span><span class="cursor"></span>
           </div>
@@ -60,6 +63,7 @@ const lineLength = 12;
 let completeString = '';
 const openingBrackets = ['<', '(', '[', '{'];
 const closingBrackets = ['>', ')', ']', '}'];
+const password = words[Math.floor(Math.random() * words.length)].toUpperCase();
 
 export default {
   name: 'Terminal',
@@ -69,7 +73,8 @@ export default {
       lines: [],
       attempts: 4,
       numberOfRows: 17,
-      currentlySelected: ''
+      currentlySelected: '',
+      outputText: []
     };
   },
 
@@ -85,7 +90,7 @@ export default {
         setTimeout(() => {
           currentLetters.push(letter);
           self.currentlySelected = currentLetters.join('');
-        }, 50 * (index + 1));
+        }, 30 * (index + 1));
       });
     },
 
@@ -180,7 +185,6 @@ export default {
       let currentSelection = [];
       for (let i = 0; i < numberOfChars; ++i) {
         if (renderedChars[i].classList.contains('selected')) {
-          console.log(renderedChars[i].innerText);
           currentSelection.push(renderedChars[i].innerText);
         }
       }
@@ -238,6 +242,54 @@ export default {
       }
 
       self.showCurrentlySelected(renderedChars);
+    },
+
+    correct: function(guess) {
+      let self = this;
+
+      //  create output text
+      self.outputText.push(`>${guess}`);
+      self.outputText.push(`>Exact match!`);
+      self.outputText.push(`>Please wait`);
+      self.outputText.push(`>while system`);
+      self.outputText.push(`>is accessed`);
+      // if it is too tall, remove some text items from the top
+      while (self.outputText.length > (self.numberOfRows - 2)) {
+        self.outputText.shift();
+      }
+    },
+
+    incorrect: function(guess, likeness) {
+      let self = this;
+
+      // reduce attempts by 1 and create output text
+      self.attempts -= 1;
+      self.outputText.push(`>${guess}`);
+      self.outputText.push(`>Entry denied`);
+      self.outputText.push(`>${likeness}/${difficulty} correct.`);
+      // if it is too tall, remove some text items from the top
+      while (self.outputText.length > (self.numberOfRows - 2)) {
+        self.outputText.shift();
+      }
+    },
+
+    checkGuess: function(guess) {
+      let self = this;
+
+      // check likeness of guess to password
+      let likeness = 0;
+      for (let i = 0; i < guess.length; ++i) {
+        if (guess[i] === password[i]) {
+          likeness += 1;
+        } else {
+          continue;
+        }
+      }
+      if (likeness === difficulty) {
+        self.correct(guess);
+      } else {
+        self.incorrect(guess, likeness);
+      }
     },
 
     keyboardInput: function() {
@@ -322,7 +374,16 @@ export default {
             break;
 
           case 13: // enter
-            console.log('enter');
+            const guess = self.currentlySelected;
+            console.log(guess);
+            // if it is not a word or bracket pair
+            if (guess.length === 1) {
+              console.log('Invalid choice');
+            }
+            // if guess is a word
+            if (guess.length > 1 && guess.match(/[A-Z]/)) {
+              self.checkGuess(guess);
+            }
             break;
         }
       });
@@ -334,6 +395,7 @@ export default {
     console.clear();
     this.specialChars(numberOfChars); // creates characters/words and renders the screen
     this.keyboardInput(); // listens for keyboard input and perform operations
+    console.log(password);
   }
 };
 </script>
@@ -368,8 +430,6 @@ $lightgreen: #4afa8f;
 .terminal-body {
   display: flex;
   flex-direction: row;
-  .words { width: 70%; }
-  .input-area { width: 30%; }
 }
 .terminal-left, .terminal-middle {
   display: flex;
@@ -382,4 +442,5 @@ $lightgreen: #4afa8f;
   flex-direction: column;
   justify-content: end;
 }
+.output-area { margin-bottom: 22px; }
 </style>
