@@ -473,7 +473,10 @@ export default {
 <style lang="scss" scoped>
 $lightgreen: #4afa8f;
 
-.terminal { margin-top: -40px; }
+.terminal {
+  margin-top: -40px;
+  line-height: 31px;
+}
 
 // blinking cursor
 @keyframes blinking {
@@ -582,7 +585,7 @@ $lightgreen: #4afa8f;
   width: 30%;
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
 }
 .output-area { margin-bottom: 22px; }
 </style>
