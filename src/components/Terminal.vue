@@ -269,15 +269,21 @@ export default {
       }
     },
 
-    incorrect: function(guess, likeness) {
+    incorrect: function(guess, likeness, isWord = true) {
       let self = this;
 
-      // reduce attempts by 1 and create output text
-      self.attempts -= 1;
-      self.outputText.push(`>${guess}`);
-      self.outputText.push(`>Entry denied`);
-      self.outputText.push(`>${likeness}/${difficulty} correct.`);
-      // if it is too tall, remove some text items from the top
+      if (isWord) {
+        // reduce attempts by 1 and create output text
+        self.attempts -= 1;
+        self.outputText.push(`>${guess}`);
+        self.outputText.push(`>Entry denied`);
+        self.outputText.push(`>${likeness}/${difficulty} correct.`);
+      } else {
+        // if we pass in a single random character
+        self.outputText.push(`>${guess}`);
+        self.outputText.push(`>Invalid input`);
+      }
+      // if output text is too tall, remove some text items from the top
       while (self.outputText.length > (self.numberOfRows - 2)) {
         self.outputText.shift();
       }
@@ -388,7 +394,7 @@ export default {
             console.log(guess);
             // if it is not a word or bracket pair
             if (guess.length === 1) {
-              self.outputText.push('wrong');
+              self.incorrect(guess, 0, false);
             }
             // if guess is a word
             if (guess.length > 1 && guess.match(/[A-Z]/)) {
