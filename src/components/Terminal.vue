@@ -107,7 +107,6 @@ export default {
       let self = this;
 
       let lines = [];
-      console.log(lines);
       // split long array in to seperate arrays of characters for each line
       for (let i = 0; i < rawArray.length; i += lineLength) {
         lines.push(rawArray.slice(i, i + lineLength));
@@ -132,7 +131,6 @@ export default {
         }
         // get the ascii code of the character at this index
         const charCode = charsString[randomIndex].charCodeAt(0);
-        console.log(randomIndex + difficulty);
         // check if it goes off the end
         if (randomIndex + (difficulty + 1) >= numberOfChars) {
           i -= 1;
@@ -413,8 +411,6 @@ export default {
               // if no, move one to the right
               selectedIndex -= 1;
             }
-            // console.log(selectedIndex);
-            // console.log(completeString[selectedIndex]);
             self.changeSelection(selectedIndex);
             break;
 
@@ -441,14 +437,11 @@ export default {
               // if no, move one to the right
               selectedIndex += 1;
             }
-            // console.log(selectedIndex);
-            // console.log(completeString[selectedIndex]);
             self.changeSelection(selectedIndex);
             break;
 
           case 13: // enter
             const guess = self.currentlySelected;
-            console.log(guess);
             // if it is not a word or bracket pair
             if (guess.length === 1) {
               self.incorrect(guess, 0, false);
@@ -472,7 +465,6 @@ export default {
     console.clear();
     this.specialChars(numberOfChars); // creates characters/words and renders the screen
     this.keyboardInput(); // listens for keyboard input and perform operations
-    console.log(password);
   }
 };
 </script>
