@@ -221,7 +221,9 @@ export default {
         const closingBracket = closingBrackets[bracketIndex];
         // check only on the current line
         // if a matching bracket is found, highlight everything between
-        for (let i = newIndex; (i + 1) % 12 !== 0; ++i) {
+        // highlight the first one, then check after that starting with newIndex + 1
+        renderedChars[newIndex].classList.add('selected');
+        for (let i = newIndex + 1; i % 12 !== 0; ++i) {
           if (renderedChars[i].innerText === closingBracket) {
             for (let j = newIndex; j <= i; ++j) {
               renderedChars[j].classList.add('selected');
