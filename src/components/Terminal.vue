@@ -3,6 +3,12 @@
 
     <div class="screen-container">
 
+      <!-- background effect markup -->
+      <div class="terminal-window">
+        <div class="terminal-layer"></div>
+        <div class="terminal-overlay"></div>
+      </div>
+
       <div class="heading">
         <p>ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL</p>
         <p>ENTER PASSWORD NOW</p>
@@ -110,6 +116,8 @@ export default {
     },
 
     formatChars: function(charsString, numberOfChars, difficulty) {
+      let self = this;
+
       for (let i = 0; i < words.length; ++i) {
         // get a random index for somewhere to randomly place the word
         const randomIndex = Math.floor(Math.random() * numberOfChars);
@@ -151,7 +159,7 @@ export default {
       }
       // pass our entire string with words in and the length of each line to this
       // function to print them to the screen
-      this.printLines(charsString, lineLength);
+      self.printLines(charsString, lineLength);
       // as well as sending the long string to the print lines function, we also save
       // it in to a variable defined at the top of the code to use further down in
       // our keypress logic
@@ -159,6 +167,8 @@ export default {
     },
 
     specialChars: function(numberOfChars) {
+      let self = this;
+
       let specialChars = [];
       let specialCharsString = [];
       // get all special characters using ascii codes
@@ -175,7 +185,7 @@ export default {
       // we pass in the array itself, the total length of the array
       // of special characters, and the difficulty which equals
       // the length of our words
-      this.formatChars(specialCharsString, numberOfChars, difficulty);
+      self.formatChars(specialCharsString, numberOfChars, difficulty);
     },
 
     showCurrentlySelected: function(renderedChars) {
@@ -378,7 +388,7 @@ export default {
             console.log(guess);
             // if it is not a word or bracket pair
             if (guess.length === 1) {
-              console.log('Invalid choice');
+              self.outputText.push('wrong');
             }
             // if guess is a word
             if (guess.length > 1 && guess.match(/[A-Z]/)) {
@@ -404,6 +414,59 @@ export default {
 <style lang="scss" scoped>
 $lightgreen: #4afa8f;
 
+// blinking cursor
+@keyframes blinking {
+  from, to { border-color: transparent; }
+  50% { border-color: $lightgreen; }
+}
+.cursor {
+  box-sizing: border-box;
+  border-left: .5em solid;
+  animation: blinking 1s step-end infinite;
+  height: 1em;
+  width: 0;
+}
+
+// terminal pulse effect
+@keyframes vline {
+  0% { top: 0px;}
+  100% { top: 100%;}
+}
+.terminal-window {
+  border-radius: 50px;
+  width: 100%;
+  height: 100%;
+  margin: -20px 0 0 -20px;
+  background-color: #212121;
+  position: absolute;
+  z-index: -9999;
+  .terminal-layer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 4001;
+    background: radial-gradient(ellipse at center, #002c12 0%, rgba(64, 64, 64, 0) 80%);
+    opacity: .9;
+  }
+  .terminal-overlay {
+    width: 100%;
+    height: 100%;
+    z-index: 4100;
+    &:before {
+      content : '';
+      position : absolute;
+      top : 0px;
+      left: 0px;
+      width : 100%;
+      height : 5px;
+      background : #fff;
+      background: linear-gradient(to bottom, rgba(255,0,0,0) 0%,rgba(255,250,250,1) 50%,rgba(255,255,255,0.98) 51%,rgba(255,0,0,0) 100%);
+      opacity : .1;
+      animation: vline 3s linear infinite;
+    }
+  }
+}
+
 .selected {
   background-color: $lightgreen;
   color: #0b2616
@@ -426,6 +489,7 @@ $lightgreen: #4afa8f;
   position: relative;
   top: 10vh;
   padding: 20px;
+  border-radius: 50px;
 }
 .terminal-body {
   display: flex;
