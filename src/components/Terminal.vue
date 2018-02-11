@@ -70,6 +70,7 @@ let completeString = '';
 const openingBrackets = ['<', '(', '[', '{'];
 const closingBrackets = ['>', ')', ']', '}'];
 const password = words[Math.floor(Math.random() * words.length)].toUpperCase();
+let usedBrackets = [];
 
 export default {
   name: 'Terminal',
@@ -260,6 +261,54 @@ export default {
       self.showCurrentlySelected(renderedChars);
     },
 
+    removeDud: function(brackets) {
+      let self = this;
+
+      // we add this bracket pair to an array so that further down
+      // we can make sure it is not usable more than once
+      usedBrackets.push(brackets);
+      let dudRemoved = false;
+      // keep getting a new random index until we find one that is in a word
+      while (!dudRemoved) {
+        let randomIndex = Math.floor(Math.random() * (numberOfChars - 1));
+        const characters = self.$refs.character;
+        // if chosen index is part of a word
+        if (characters[randomIndex].innerText.charCodeAt(0) >= 65 && characters[randomIndex].innerText.charCodeAt(0) <= 90) {
+          // we have to check the letter before the randomly chosen one to see if
+          // we are at the start of a word or in the middle of a word before we remove it.
+          // if we are in the middle of a word reduce the index by 1 until we get to
+          // the start of a word (startOfWord = true)
+          let startOfWord = false;
+          while (!startOfWord) {
+            if (characters[randomIndex - 1].innerText.charCodeAt(0) >= 65 && characters[randomIndex - 1].innerText.charCodeAt(0) <= 90) {
+              randomIndex -= 1;
+            } else {
+              startOfWord = true;
+            }
+          }
+          // make sure our randomly found word is not the password as that isn't a dud
+          let checkIfPassword = [];
+          for (let i = randomIndex; i < randomIndex + 7; ++i) {
+            checkIfPassword.push(characters[i].innerText);
+          }
+          if (checkIfPassword.join('') === password) {
+            continue;
+          } else {
+            for (let i = randomIndex; i < randomIndex + 7; ++i) {
+              characters[i].innerText = '.';
+            }
+            dudRemoved = true;
+            self.outputText.push(`>${brackets}`);
+            self.outputText.push(`>Dud removed.`);
+            // if it is too tall, remove some text items from the top
+            while (self.outputText.length > (self.numberOfRows - 2)) {
+              self.outputText.shift();
+            }
+          }
+        }
+      }
+    },
+
     correct: function(guess) {
       let self = this;
 
@@ -401,6 +450,10 @@ export default {
             // if it is not a word or bracket pair
             if (guess.length === 1) {
               self.incorrect(guess, 0, false);
+            }
+            // if guess is a bracket pair
+            if (guess.length > 1 && !guess.match(/[A-Z]/) && !usedBrackets.includes(guess)) {
+              self.removeDud(guess);
             }
             // if guess is a word
             if (guess.length > 1 && guess.match(/[A-Z]/)) {
