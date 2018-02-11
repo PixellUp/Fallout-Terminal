@@ -3,6 +3,8 @@
 
     <div class="screen-container">
 
+      <div class="scan-lines"></div>
+
       <!-- background effect markup -->
       <div class="terminal-window">
         <div class="terminal-layer"></div>
@@ -505,6 +507,7 @@ $lightgreen: #4afa8f;
   background-color: #212121;
   position: absolute;
   z-index: -9999;
+  overflow: hidden;
   .terminal-layer {
     width: 100%;
     height: 100%;
@@ -515,23 +518,40 @@ $lightgreen: #4afa8f;
   }
   .terminal-overlay {
     width: 100%;
-    height: 100%;
+    height: calc(100% + 300px);
+    top: -150px;
     z-index: 4100;
+    position: absolute;
     &:before {
       content : '';
       position : absolute;
       top : 0px;
       left: 0px;
       width : 100%;
-      height : 5px;
+      height : 150px;
       background : #fff;
-      background: linear-gradient(to bottom, rgba(255,0,0,0) 0%,rgba(255,250,250,1) 50%,rgba(255,255,255,0.98) 51%,rgba(255,0,0,0) 100%);
-      opacity : .1;
+      background: -moz-linear-gradient(top, rgba(30,87,153,0) 0%, rgba(80,80,80,0.8) 90%, rgba(221,221,221,0) 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(top, rgba(30,87,153,0) 0%,rgba(80,80,80,0.8) 90%,rgba(221,221,221,0) 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(to bottom, rgba(30,87,153,0) 0%,rgba(80,80,80,0.8) 90%,rgba(221,221,221,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#001e5799', endColorstr='#00dddddd',GradientType=0 ); /* IE6-9 */
+      opacity : .2;
       animation: vline 3s linear infinite;
     }
   }
 }
-
+.scan-lines {
+  background: linear-gradient(#444 50%, #000 50%);
+  background-size: 100% 4px;
+  background-repeat: repeat-y;
+  opacity: .2;
+  box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, .8);
+  z-index: 999999;
+  height: 100%;
+  width: 100%;
+  margin: -20px 0 0 -20px;
+  border-radius: 50px;
+  position: absolute;
+}
 .selected {
   background-color: $lightgreen;
   color: #0b2616
