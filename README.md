@@ -1,6 +1,4 @@
-# falloutterminal
-
-******** WORK IN PROGRESS ********
+# Fallout Terminal
 
 > Fallout Terminal
 
