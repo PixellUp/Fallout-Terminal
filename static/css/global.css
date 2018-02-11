@@ -2,6 +2,10 @@
   font-family: "Fixedsys";
   src: url("/static/fonts/fixedsys.ttf");
 }
+@font-face {
+  font-family: 'Open Sans';
+  src: url("/static/fonts/OpenSans-Regular.ttf")
+}
 body {
   color: #4afa8f;
   font-family: 'FixedSys', sans-serif;

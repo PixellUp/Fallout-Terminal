@@ -481,6 +481,8 @@ export default {
 <style lang="scss" scoped>
 $lightgreen: #4afa8f;
 
+.terminal { margin-top: -40px; }
+
 // blinking cursor
 @keyframes blinking {
   from, to { border-color: transparent; }
