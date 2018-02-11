@@ -19,7 +19,7 @@
 
       <p slot="footer">Ben Bancroft | 2018</p>
       <p class="modal-social-links" slot="footer">
-        <a href="https://github.com/bjbancroft19/cryptocompare" target="_blank"><icon name="github"></icon></a>
+        <a href="https://github.com/bjbancroft19" target="_blank"><icon name="github"></icon></a>
         <a href="https://www.linkedin.com/in/ben-bancroft-b07058115/" target="_blank"><icon name="linkedin"></icon></a>
         <a href="mailto:bjbancroft19@gmail.com"><icon name="envelope"></icon></a>
       </p>
@@ -78,16 +78,17 @@ $darkgreen: #008f3b;
   .modal-header {
     h2 { margin: 0; }
   }
-  .modal-social-links {
-    margin-top: 10px;
-    .fa-icon {
-      color: $darkgreen;
-      width: 24px;
-      height: auto;
-      margin: 0 5px;
-    }
-  }
   .modal-footer {
+    .modal-social-links {
+      margin-top: 10px;
+      .fa-icon {
+        color: $darkgreen;
+        width: 24px;
+        height: auto;
+        margin: 0 5px;
+      }
+    }
+    p { margin-top: 0; }
     &:before {
       background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, #444), color-stop(50%, #000));
       background: linear-gradient(#444 50%, #000 50%);
