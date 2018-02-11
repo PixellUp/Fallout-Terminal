@@ -121,12 +121,17 @@ export default {
       for (let i = 0; i < words.length; ++i) {
         // get a random index for somewhere to randomly place the word
         const randomIndex = Math.floor(Math.random() * numberOfChars);
+        // prevent 0 from being chosen as this causes problems later on with randomIndex - 1
+        if (randomIndex === 0) {
+          // remove 1 from i to repeat this iteration of the words and try again
+          i -= 1;
+          continue;
+        }
         // get the ascii code of the character at this index
         const charCode = charsString[randomIndex].charCodeAt(0);
         console.log(randomIndex + difficulty);
         // check if it goes off the end
-        if (randomIndex + difficulty > numberOfChars) {
-          // remove 1 from i to repeat this iteration of the words and try again
+        if (randomIndex + (difficulty + 1) >= numberOfChars) {
           i -= 1;
           continue;
         }
@@ -142,8 +147,7 @@ export default {
         // also check behind so we don't overlap
         // randomIndex - 1 ensures a 1 character space so two words are not directly next to each other
         } else if (charsString[randomIndex - 1].charCodeAt(0) >= 65 &&
-          charsString[randomIndex - 1].charCodeAt(0) <= 90 &&
-          charsString[randomIndex - 1] < 0) {
+          charsString[randomIndex - 1].charCodeAt(0) <= 90) {
           i -= 1;
           continue;
         } else if (charsString[randomIndex - 1] !== undefined || charsString[randomIndex + (difficulty + 1)] !== undefined) {
