@@ -1,6 +1,6 @@
 # Fallout Terminal
 
-![Fallout Terminal](https://raw.githubusercontent.com/bjbancroft19/Fallout-Terminal/master/vaultboy.png)
+![Fallout Terminal](https://raw.githubusercontent.com/bjbancroft19/Fallout-Terminal/master/static/img/vaultboy.png)
 
 Inspired by the popular video game series Fallout, this fun hacking game requires the user to guess a randomly selected password to gain access to the terminal.
 
