@@ -1,6 +1,15 @@
 # Fallout Terminal
 
-> Fallout Terminal
+![Fallout Terminal](https://raw.githubusercontent.com/bjbancroft19/Fallout-Terminal/master/vaultboy.png)
+
+Inspired by the popular video game series Fallout, this fun hacking game requires the user to guess a randomly selected password to gain access to the terminal.
+
+![Fallout Terminal](https://raw.githubusercontent.com/bjbancroft19/Fallout-Terminal/master/fallout-terminal.jpg)
+
+## To Do
+
+* Add option for user to play again at the end of the game
+* Add sound effects
 
 ## Build Setup
 
