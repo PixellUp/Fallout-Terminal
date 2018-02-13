@@ -4,6 +4,8 @@
 
 Inspired by the popular video game series Fallout, this fun hacking game requires the user to guess a randomly selected password to gain access to the terminal.
 
+This project was built using Vue.js as a means of helping me become more familiar with the framework, and concepts such as templating, transitions, reusable single-file components, and more.
+
 ![Fallout Terminal](https://raw.githubusercontent.com/bjbancroft19/Fallout-Terminal/master/fallout-terminal.jpg)
 
 ## To Do
