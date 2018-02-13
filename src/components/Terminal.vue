@@ -11,15 +11,16 @@
         <div class="terminal-overlay"></div>
       </div>
 
-      <div class="heading">
+      <div class="heading" v-if="attempts > 0">
         <p>ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL</p>
         <p>ENTER PASSWORD NOW</p>
-        <br>
+        <br v-if="lockoutWarning === false">
+        <p class="lockout-warning" v-if="lockoutWarning">!!! TERMINAL LOCKOUT IMMINENT !!!</p>
         <p><span class="attempts-count">{{ attempts }}</span> ATTEMPT(S) LEFT: <span class="attempts-squares"><span v-for="n in attempts" :key="n.id" class="attempts-square"></span></span></p>
         <br>
       </div>
 
-      <div class="terminal-body">
+      <div class="terminal-body" v-if="attempts > 0">
         <div class="terminal-left">
           <span class="hex" v-for="(n, rowIndex) in numberOfRows" :key="n.id">0xF000&nbsp;
             <!-- class is added for the very first character on page load -->
@@ -39,7 +40,11 @@
             ><span class="input"><span>{{ currentlySelected }}</span></span><span class="cursor"></span>
           </div>
         </div>
+      </div>
 
+      <div class="lockout" v-if="attempts === 0">
+        <p>TERMINAL LOCKED</p>
+        <p>PLEASE CONTACT AN ADMINISTRATOR</p>
       </div>
 
     </div>
@@ -83,7 +88,8 @@ export default {
       attempts: 4,
       numberOfRows: 17,
       currentlySelected: '',
-      outputText: []
+      outputText: [],
+      lockoutWarning: false
     };
   },
 
@@ -330,6 +336,11 @@ export default {
       if (isWord) {
         // reduce attempts by 1 and create output text
         self.attempts -= 1;
+        if (self.attempts === 1) {
+          self.lockoutWarning = true; // show warning
+        } else {
+          self.lockoutWarning = false;
+        }
         self.outputText.push(`>${guess}`);
         self.outputText.push(`>Entry denied`);
         self.outputText.push(`>${likeness}/${difficulty} correct.`);
@@ -490,6 +501,14 @@ $lightgreen: #4afa8f;
   height: 1em;
   width: 0;
 }
+// lockout warning blink
+@keyframes blink {
+  from, to { opacity: 0; }
+  50% { opacity: 1; }
+}
+.lockout-warning {
+  animation: blink 1s step-end infinite;
+}
 
 // terminal pulse effect
 @keyframes vline {
@@ -588,4 +607,12 @@ $lightgreen: #4afa8f;
   justify-content: flex-end;
 }
 .output-area { margin-bottom: 22px; }
+.lockout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  p { height: 10%; }
+}
 </style>
