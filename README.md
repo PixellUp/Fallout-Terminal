@@ -10,6 +10,7 @@ This project was built using Vue.js as a means of helping me become more familia
 
 ## To Do
 
+* Additional words and difficulty levels
 * Add option for user to play again at the end of the game
 * Add sound effects
 
